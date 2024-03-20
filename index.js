@@ -20,6 +20,9 @@ app.use(express.json());
 // ----------------------------------------------------------------------------------------- //
 // init the routes
 app.use("/user", userRouter);
+app.use("/hello", (req, res) => {
+  return res.json("Hello World");
+});
 
 // ----------------------------------------------------------------------------------------- //
 // if the request is not handled by any of the above routes
