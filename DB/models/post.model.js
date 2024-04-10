@@ -4,15 +4,19 @@ const postSchema = new mongoose.Schema(
   {
     member: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Member",
+      ref: "User",
       required: true,
     },
-    text: { type: String, required: true },
-    image: { type: String },
+    text: { type: String },
+    missingPerson: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "MissingPerson",
+    },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
 
 postSchema.virtual("comments", {
   ref: "Comment",

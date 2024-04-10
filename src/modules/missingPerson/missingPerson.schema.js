@@ -1,0 +1,25 @@
+import Joi from "joi";
+
+// fname: { type: String, required: true },
+// lname: { type: String, required: true },
+// gender: { type: String, enum: ["male", "female"] },
+// age: { type: Number, min: 0 },
+// city: { type: String },
+// locationOfLoss: { type: String },
+// dateOfLoss: { type: String },
+// description: { type: String },
+// images: [{ type: String }],
+// status: { type: String },
+export const addMissingPersonSchema = Joi.object({
+  fname: Joi.string().required(),
+  lname: Joi.string().required(),
+  gender: Joi.string().valid("male", "female").required(),
+  age: Joi.number().min(0).required(),
+  city: Joi.string().required(),
+  locationOfLoss: Joi.string().required(),
+  dateOfLoss: Joi.date().required(),
+  description: Joi.string().required(),
+  images: Joi.array().items(Joi.string()).required(),
+  status: Joi.string().required(),
+  additonalInfo: Joi.string(),
+});
