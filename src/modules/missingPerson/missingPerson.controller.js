@@ -17,11 +17,35 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
     text: req.body.additonalInfo,
     member: req.user._id,
   });
-  post = await post.populate("member" , "firstName lastName");
+  post = await post.populate("member", "firstName lastName");
   return res.status(201).json({
     success: true,
     data: {
       post,
+    },
+  });
+});
+
+export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
+  // get all the missing person
+  // return response
+  const missingPersons = await MissingPerson.find();
+  return res.status(200).json({
+    success: true,
+    data: {
+      missingPersons,
+    },
+  });
+});
+
+export const getMissingPerson = asyncHandler(async (req, res, next) => {
+  // get the missing person by id
+  // return response
+  const missingPerson = await MissingPerson.findById(req.params.id);
+  return res.status(200).json({
+    success: true,
+    data: {
+      missingPerson,
     },
   });
 });
