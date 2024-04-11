@@ -20,4 +20,13 @@ router.post(
   missingPersonController.addMissingPerson
 );
 
+router.patch(
+  "/:id",
+  isAuthenticated,
+  isAuthorized("user", "admin"),
+  validation(missingPersonSchema.updateMissingPersonSchema),
+  missingPersonController.updateMissingPerson
+);
+
+
 export default router;

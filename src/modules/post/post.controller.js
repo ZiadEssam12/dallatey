@@ -24,3 +24,51 @@ export const getPost = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+export const makePostAsSolved = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    return res.status(404).json({
+      success: false,
+      message: "Post not found",
+    });
+  }
+  if (post.member !== req.user.id || req.user.role !== "admin") {
+    return res.status(401).json({
+      success: false,
+      message: "You are not authorized to perform this action",
+    });
+  }
+  post.isActive = false;
+  await post.save();
+  return res.status(200).json({
+    success: true,
+    data: {
+      post,
+    },
+  });
+});
+
+export const updatePost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    return res.status(404).json({
+      success: false,
+      message: "Post not found",
+    });
+  }
+  if (post.member !== req.user.id || req.user.role !== "admin") {
+    return res.status(401).json({
+      success: false,
+      message: "You are not authorized to perform this action",
+    });
+  }
+  post.text = req.body.text;
+  await post.save();
+  return res.status(200).json({
+    success: true,
+    data: {
+      post,
+    },
+  });
+});

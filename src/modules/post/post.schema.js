@@ -1,5 +1,7 @@
-import joi from 'joi'
+import joi from "joi";
+import { validateID } from "../../middleware/validation.middleware";
 
-const createPostSchema = joi.object({
-    
-})
+export const markPostAsSolved = joi.object({
+  id: joi.custom(validateID).required(),
+});
+
