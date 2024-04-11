@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { validateID } from "../../middleware/validation.middleware";
 
 // fname: { type: String, required: true },
 // lname: { type: String, required: true },
@@ -32,4 +33,8 @@ export const updateMissingPersonSchema = Joi.object({
   description: Joi.string(),
   images: Joi.array().items(Joi.string()),
   additonalInfo: Joi.string(),
+});
+
+export const markAsDoneSchema = Joi.object({
+  id: Joi.string().custom(validateID).required(),
 });

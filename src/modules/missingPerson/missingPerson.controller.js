@@ -36,6 +36,7 @@ export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
 export const getMissingPerson = asyncHandler(async (req, res, next) => {
   // get the missing person by id
   // return response
+
   const missingPerson = await MissingPerson.findById(req.params.id);
   return res.status(200).json({
     success: true,
@@ -48,23 +49,28 @@ export const getMissingPerson = asyncHandler(async (req, res, next) => {
 export const updateMissingPerson = asyncHandler(async (req, res, next) => {
   // update the missing person by id
   // return response
-  const missingPerson = await MissingPerson.findById(req.params.id);
-  if (!missingPerson) {
-    return res.status(404).json({
-      success: false,
-      message: "Missing person not found",
-    });
-  }
-  if (
-    missingPerson.addedBy.toString() !== req.user._id.toString() ||
-    req.user.role !== "admin"
-  ) {
-    return res.status(403).json({
-      success: false,
-      message: "You are not authorized to update this missing person",
-    });
-  }
+  const missingPerson = req.missingPerson;
   Object.assign(missingPerson, req.body);
+  await missingPerson.save();
+  return res.status(200).json({
+    success: true,
+    data: {
+      missingPerson,
+    },
+  });
+});
+
+export const markAsDone = asyncHandler(async (req, res, next) => {
+  // mark the missing person as done
+  // return response
+  const missingPerson = req.missingPerson;
+  if (missingPerson.status === "done") {
+    return res.status(400).json({
+      success: false,
+      message: "Missing person is already marked as done",
+    });
+  }
+  missingPerson.status = "done";
   await missingPerson.save();
   return res.status(200).json({
     success: true,
