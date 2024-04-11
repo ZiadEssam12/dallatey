@@ -10,7 +10,8 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // return response
   // create the missing person
   //   return res.json(req.body);
-  const person = await MissingPerson.create(req.body, {
+  const person = await MissingPerson.create({
+    ...req.body,
     addedBy: req.user._id,
   });
   return res.status(201).json({

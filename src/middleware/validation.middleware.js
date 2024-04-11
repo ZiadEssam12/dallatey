@@ -8,7 +8,8 @@ export const validateID = (value, helper) => {
 const validation = (schema) => {
   return (req, res, next) => {
     // abortEarly: false => return all errors not just the first one
-    const validateResult = schema.validate(req.body, { abortEarly: false });
+    const data = { ...req.body, ...req.params, ...req.query };
+    const validateResult = schema.validate(data, { abortEarly: false });
     if (validateResult.error) {
       // map the error details to a new array
       const errors = validateResult.error.details.map(

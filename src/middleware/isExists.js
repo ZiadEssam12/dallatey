@@ -9,9 +9,9 @@ const isExists = asyncHandler(async (req, res, next) => {
       message: "Missing person not found",
     });
   }
+  console.log(missingPerson.addedBy.toString() === req.user.id.toString());
   if (
-    missingPerson.addedBy.toString() !== req.user._id.toString() ||
-    req.user.role !== "admin"
+    missingPerson.addedBy.toString() !== req.user.id.toString() && req.user.role !== "admin"
   ) {
     return res.status(403).json({
       success: false,

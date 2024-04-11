@@ -21,6 +21,7 @@ export const addMissingPersonSchema = Joi.object({
   description: Joi.string().required(),
   images: Joi.array().items(Joi.string()).required(),
   additonalInfo: Joi.string(),
+  status: Joi.string().valid("missing", "found").required(),
 });
 
 export const updateMissingPersonSchema = Joi.object({
