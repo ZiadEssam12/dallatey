@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validateID } from "../../middleware/validation.middleware";
+import { validateID } from "../../middleware/validation.middleware.js";
 
 // fname: { type: String, required: true },
 // lname: { type: String, required: true },
