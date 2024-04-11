@@ -1,5 +1,4 @@
 import MissingPerson from "../../../DB/models/missingPerson.model.js";
-import Post from "../../../DB/models/post.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 
 export const addMissingPerson = asyncHandler(async (req, res, next) => {
@@ -11,17 +10,13 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // return response
   // create the missing person
   //   return res.json(req.body);
-  const person = await MissingPerson.create(req.body);
-  let post = await Post.create({
-    missingPerson: person,
-    text: req.body.additonalInfo,
-    member: req.user._id,
+  const person = await MissingPerson.create(req.body, {
+    addedBy: req.user._id,
   });
-  post = await post.populate("member", "firstName lastName");
   return res.status(201).json({
     success: true,
     data: {
-      post,
+      person,
     },
   });
 });
@@ -29,7 +24,7 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
 export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
   // get all the missing person
   // return response
-  const missingPersons = await MissingPerson.find();
+  const missingPersons = await MissingPerson.find().populate("addedBy");
   return res.status(200).json({
     success: true,
     data: {
@@ -53,42 +48,28 @@ export const getMissingPerson = asyncHandler(async (req, res, next) => {
 export const updateMissingPerson = asyncHandler(async (req, res, next) => {
   // update the missing person by id
   // return response
-  // patams id is the id of the post that contains the missing person so we need to get the missing person id from the post
-  const post = await Post.findByIdAndUpdate(req.params.id, req.body.text, {
-    new: true,
-  });
-  // check for the post
-  if (!post) {
+  const missingPerson = await MissingPerson.findById(req.params.id);
+  if (!missingPerson) {
     return res.status(404).json({
       success: false,
-      message: "Post not found",
+      message: "Missing person not found",
     });
   }
-
-  // check if the user is the owner of the post or the user is admin
   if (
-    post.member.toString() !== req.user._id.toString() ||
+    missingPerson.addedBy.toString() !== req.user._id.toString() ||
     req.user.role !== "admin"
   ) {
     return res.status(403).json({
       success: false,
-      message: "You are not authorized to update this post",
+      message: "You are not authorized to update this missing person",
     });
   }
-
-  // update the missing person
-  const missingPerson = await MissingPerson.findByIdAndUpdate(
-    post.missingPerson,
-    req.body,
-    { new: true }
-  );
-  post.missingPerson = missingPerson;
-
-  //return the result
+  Object.assign(missingPerson, req.body);
+  await missingPerson.save();
   return res.status(200).json({
     success: true,
     data: {
-      post,
+      missingPerson,
     },
   });
 });

@@ -11,11 +11,12 @@ const missingPersonSchema = new mongoose.Schema(
     description: { type: String },
     images: [{ type: String }],
     status: { type: String },
+    addedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    additionalInfo: { type: String },
   },
   { timestamps: true }
 );
 
 const MissingPerson = mongoose.model("MissingPerson", missingPersonSchema);
 
-
-export default MissingPerson
+export default MissingPerson;
