@@ -38,4 +38,6 @@ router.patch(
   isExists,
   missingPersonController.markAsDone
 );
+
+router.get("/", isAuthenticated, missingPersonController.getAllMissingPerson);
 export default router;

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { io } from "../../index.js";
 
 const missingPersonSchema = new mongoose.Schema(
   {
@@ -21,6 +22,11 @@ const missingPersonSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+missingPersonSchema.post("save", function (doc) {
+  // After a document is saved, emit the event to all connected clients
+  io.emit("newPost", {
+    title: "New post was added to our Database reolad to see the changes",
+  });
+});
 const MissingPerson = mongoose.model("MissingPerson", missingPersonSchema);
-
 export default MissingPerson;

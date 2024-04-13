@@ -3,7 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connection from "./DB/db_connection.js";
 import userRouter from "./src/modules/user/user.router.js";
+import socketRouter from "./src/modules/socketIOUser/socket.router.js";
 import missingPersonRouter from "./src/modules/missingPerson/missingPerson.router.js";
+import { Server as SocketIOServer } from "socket.io";
+
 // usign dotenv to load environment variables
 dotenv.config();
 
@@ -21,6 +24,7 @@ app.use(express.json());
 // init the routes
 app.use("/user", userRouter);
 app.use("/missingPerson", missingPersonRouter);
+app.use("/socket", socketRouter);
 app.use("/hello", (req, res) => {
   return res.json("Hello World");
 });
@@ -51,6 +55,20 @@ app.use((err, req, res, next) => {
 
 // ----------------------------------------------------------------------------------------- //
 //starting the server
-app.listen(port, async () => {
+const server = app.listen(port, async () => {
   console.log(`Server listening on port ${port}`);
+});
+
+export const io = new SocketIOServer(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  // save user's id and socket id in the database
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
 });
