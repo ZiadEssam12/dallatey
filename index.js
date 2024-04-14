@@ -4,8 +4,10 @@ import cors from "cors";
 import connection from "./DB/db_connection.js";
 import userRouter from "./src/modules/user/user.router.js";
 import socketRouter from "./src/modules/socketIOUser/socket.router.js";
+import notificationRouter from "./src/modules/notifications/notification.router.js";
 import missingPersonRouter from "./src/modules/missingPerson/missingPerson.router.js";
 import { Server as SocketIOServer } from "socket.io";
+import SocketUser from "./DB/models/socketUser.js";
 
 // usign dotenv to load environment variables
 dotenv.config();
@@ -25,6 +27,7 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/missingPerson", missingPersonRouter);
 app.use("/socket", socketRouter);
+app.use("/notification", notificationRouter);
 app.use("/hello", (req, res) => {
   return res.json("Hello World");
 });
@@ -68,7 +71,10 @@ export const io = new SocketIOServer(server, {
 io.on("connection", (socket) => {
   // save user's id and socket id in the database
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
+  socket.on("disconnect", async () => {
+    await SocketUser.findOneAndUpdate(
+      { socketId: socket.id },
+      { isActive: false }
+    );
   });
 });

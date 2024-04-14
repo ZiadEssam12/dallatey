@@ -1,24 +1,25 @@
 import { Router } from "express";
-import * as socketController from "./socket.controller.js";
-import * as socketSchema from "./socket.schema.js";
+import * as notificationController from "./notification.controller.js";
+import * as notificationSchema from "./notification.schema.js";
 import isAuthenticated from "../../middleware/isAuthenticated.js";
 import isAuthorized from "../../middleware/isAuthorized.js";
 import validation from "../../middleware/validation.middleware.js";
 
 const router = Router();
 
-router.post(
+router.get(
   "/",
   isAuthenticated,
   isAuthorized("user", "admin"),
-  validation(socketSchema.checkUserSocketSchema),
-  socketController.checkUserSocket
+  notificationController.getNotifications
 );
 
 router.patch(
-  "/",
+  "/:id",
   isAuthenticated,
   isAuthorized("user", "admin"),
-  socketController.disconnectUserSocket
+  validation(notificationSchema.markNotificationAsReadSchema),
+  notificationController.markNotificationAsRead
 );
+
 export default router;
