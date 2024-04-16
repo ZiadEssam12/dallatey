@@ -7,7 +7,9 @@ const getActiveUsersInCity = async (governorate) => {
     }).populate("userId");
 
     const usersData = activeSocketUsers
-      .filter((socketUser) => socketUser.userId.governorate === governorate)
+      .filter(
+        (socketUser) => socketUser.userId.address.governorate === governorate
+      )
       .map((socketUser) => ({
         userId: socketUser.userId._id,
         socketId: socketUser.socketId,

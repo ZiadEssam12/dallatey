@@ -6,6 +6,7 @@ import isAuthenticated from "../../middleware/isAuthenticated.js";
 import isAuthorized from "../../middleware/isAuthorized.js";
 import validation from "../../middleware/validation.middleware.js";
 import isExists from "../../middleware/isExists.js";
+import fileUpload from "../../utils/cloudUpload.js";
 // ------
 // --------
 // ----------
@@ -17,6 +18,7 @@ router.post(
   "/",
   isAuthenticated,
   isAuthorized("user", "admin"),
+  fileUpload().array("images"),
   validation(missingPersonSchema.addMissingPersonSchema),
   missingPersonController.addMissingPerson
 );

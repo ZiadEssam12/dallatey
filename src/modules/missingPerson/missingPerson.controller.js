@@ -13,6 +13,9 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   const person = await MissingPerson.create({
     ...req.body,
     addedBy: req.user._id,
+    images: req.files.map((file) => ({
+      path: file.path,
+    })),
   });
   return res.status(201).json({
     success: true,
@@ -25,10 +28,17 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
 export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
   // get all the missing person
   // return response
-  const missingPersons = await MissingPerson.find()
+  const { sort, keyword, page } = req.query;
+
+  const missingPersons = await MissingPerson.find({
+    ...req.query,
+  })
     .sort({
+      sort,
       createdAt: -1,
     })
+    .paginate(page)
+    .search(keyword)
     .populate("addedBy");
   return res.status(200).json({
     success: true,
