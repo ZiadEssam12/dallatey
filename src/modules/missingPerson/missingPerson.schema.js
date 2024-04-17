@@ -19,7 +19,7 @@ export const addMissingPersonSchema = Joi.object({
   locationOfLoss: Joi.string().required(),
   dateOfLoss: Joi.date().required(),
   description: Joi.string().required(),
-  images: Joi.array().items(Joi.string()).required(),
+  // images: Joi.array().items(Joi.string()).required(),
   additonalInfo: Joi.string(),
   status: Joi.string().valid("missing", "found").required(),
 });

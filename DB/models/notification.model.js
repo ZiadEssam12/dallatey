@@ -22,5 +22,11 @@ const notificationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+notificationSchema.query.paginate = function (page) {
+  let limit = 10;
+  page = page < 1 || !page || isNaN(page) ? 1 : page;
+  return this.skip((page - 1) * limit).limit(limit);
+};
+
 const Notification = mongoose.model("Notification", notificationSchema);
 export default Notification;

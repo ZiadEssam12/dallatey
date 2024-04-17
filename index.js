@@ -37,7 +37,7 @@ app.use("/hello", (req, res) => {
 app.all("*", (req, res) => {
   res.status(404).json({
     status: "fail",
-    message: `Can't find ${req.originalUrl} on this server !`,
+    message: `Can't find ${req.originalUrl} with method ${req.method} on this server !`,
   });
 });
 

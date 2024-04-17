@@ -1,5 +1,6 @@
 import MissingPerson from "../../../DB/models/missingPerson.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
+import path from "path";
 
 export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // check if the person is already exists or not by checking the model for the same person
@@ -13,9 +14,7 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   const person = await MissingPerson.create({
     ...req.body,
     addedBy: req.user._id,
-    images: req.files.map((file) => ({
-      path: file.path,
-    })),
+    images: req.files.map((file) => path.basename(file.path)),
   });
   return res.status(201).json({
     success: true,
@@ -29,14 +28,11 @@ export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
   // get all the missing person
   // return response
   const { sort, keyword, page } = req.query;
-
+  console.log(req.query);
   const missingPersons = await MissingPerson.find({
     ...req.query,
   })
-    .sort({
-      sort,
-      createdAt: -1,
-    })
+    .sort(sort)
     .paginate(page)
     .search(keyword)
     .populate("addedBy");

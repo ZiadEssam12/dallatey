@@ -12,11 +12,7 @@ const missingPersonSchema = new mongoose.Schema(
     locationOfLoss: { type: String, required: true },
     dateOfLoss: { type: String, required: true },
     description: { type: String, required: true },
-    images: [
-      {
-        path: { type: String, required: true },
-      },
-    ],
+    images: [{ type: String, required: true }],
     status: { type: String, required: true },
     addedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -52,12 +48,12 @@ missingPersonSchema.post("save", async (doc) => {
   const notificationPromises = userSocket.map(async (user) => {
     await Notification.create({
       title: "New Notification",
-      description: `New Missing Person Near ${doc.city} You was added to our Database`,
+      description: `New Missing Person in ${doc.city}  was added to our Database`,
       user: user.userId, // Use the userId from userSocket
       missingPerson: doc._id,
     });
     io.to(user.socketId).emit("newPost", {
-      title: `New Missing Person Near ${doc.city} You was added to our Database`,
+      title: `New Missing Person in ${doc.city} was added to our Database`,
     });
   });
 

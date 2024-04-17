@@ -42,4 +42,10 @@ router.patch(
 );
 
 router.get("/", isAuthenticated, missingPersonController.getAllMissingPerson);
+router.get(
+  "/:id",
+  isAuthenticated,
+  isExists,
+  missingPersonController.getMissingPerson
+);
 export default router;
