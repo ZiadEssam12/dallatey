@@ -23,7 +23,7 @@ const notificationSchema = new mongoose.Schema(
 );
 
 notificationSchema.query.paginate = function (page) {
-  let limit = 10;
+  let limit = 5;
   page = page < 1 || !page || isNaN(page) ? 1 : page;
   return this.skip((page - 1) * limit).limit(limit);
 };

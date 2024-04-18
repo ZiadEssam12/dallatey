@@ -1,7 +1,11 @@
+import Notification from "../../../DB/models/notification.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 
 export const getNotifications = asyncHandler(async (req, res, next) => {
-  const userNotifications = await Notification.find({ userId: req.user.id });
+  const { page } = req.query;
+  const userNotifications = await Notification.find({
+    user: req.user.id,
+  }).paginate(page);
   return res.status(200).json({
     success: true,
     data: userNotifications,
@@ -17,7 +21,7 @@ export const markNotificationAsRead = asyncHandler(async (req, res, next) => {
     });
   }
   if (
-    notification.userId.toString() !== req.user.id &&
+    notification.user.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return res.status(403).json({

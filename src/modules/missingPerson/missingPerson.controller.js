@@ -28,14 +28,13 @@ export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
   // get all the missing person
   // return response
   const { sort, keyword, page } = req.query;
-  console.log(req.query);
   const missingPersons = await MissingPerson.find({
     ...req.query,
   })
-    .sort(sort)
+    .sort(`${sort} -createdAt`)
     .paginate(page)
     .search(keyword)
-    .populate("addedBy");
+    .populate("addedBy", "firstName lastName");
   return res.status(200).json({
     success: true,
     data: {
@@ -48,7 +47,10 @@ export const getMissingPerson = asyncHandler(async (req, res, next) => {
   // get the missing person by id
   // return response
 
-  const missingPerson = await MissingPerson.findById(req.params.id);
+  const missingPerson = await MissingPerson.findById(req.params.id).populate(
+    "addedBy",
+    "firstName lastName"
+  );
   return res.status(200).json({
     success: true,
     data: {
@@ -78,15 +80,30 @@ export const markAsDone = asyncHandler(async (req, res, next) => {
   if (missingPerson.status === "done") {
     return res.status(400).json({
       success: false,
-      message: "Missing person is already marked as done",
+      message: "Missing person was already marked as done",
     });
   }
   missingPerson.status = "done";
   await missingPerson.save();
   return res.status(200).json({
     success: true,
+    message: "Missing person marked as done",
     data: {
       missingPerson,
+    },
+  });
+});
+
+export const getMissingNames = asyncHandler(async (req, res, next) => {
+  const { name, page } = req.query;
+  return res.status(200).json({
+    success: true,
+    data: {
+      missingPersons: await MissingPerson.find({
+        name: { $regex: name, $options: "i" },
+      })
+        .select("name status")
+        .paginate(page),
     },
   });
 });

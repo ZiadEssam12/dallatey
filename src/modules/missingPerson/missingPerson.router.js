@@ -41,11 +41,13 @@ router.patch(
   missingPersonController.markAsDone
 );
 
-router.get("/", isAuthenticated, missingPersonController.getAllMissingPerson);
 router.get(
-  "/:id",
+  "/name",
   isAuthenticated,
-  isExists,
-  missingPersonController.getMissingPerson
+  isAuthorized("admin", "user"),
+  missingPersonController.getMissingNames
 );
+router.get("/", isAuthenticated, missingPersonController.getAllMissingPerson);
+router.get("/:id", isAuthenticated, missingPersonController.getMissingPerson);
+
 export default router;
