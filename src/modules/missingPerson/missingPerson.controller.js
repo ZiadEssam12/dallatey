@@ -99,9 +99,8 @@ export const getMissingNames = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     success: true,
     data: {
-      missingPersons: await MissingPerson.find({
-        name: { $regex: name, $options: "i" },
-      })
+      missingPersons: await MissingPerson.find()
+        .search(name)
         .select("name status")
         .paginate(page),
     },

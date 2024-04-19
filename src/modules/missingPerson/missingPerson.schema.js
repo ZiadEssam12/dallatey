@@ -19,7 +19,7 @@ export const addMissingPersonSchema = Joi.object({
   locationOfLoss: Joi.string().required(),
   dateOfLoss: Joi.date().required(),
   description: Joi.string().required(),
-  // images: Joi.array().items(Joi.string()).required(),
+  // images: Joi.array().items(Joi.string()).required(), /// already checked in the middleware
   additonalInfo: Joi.string(),
   status: Joi.string().valid("missing", "found").required(),
 });
@@ -34,6 +34,7 @@ export const updateMissingPersonSchema = Joi.object({
   description: Joi.string(),
   images: Joi.array().items(Joi.string()),
   additonalInfo: Joi.string(),
+  id: Joi.string().custom(validateID).required(),
 });
 
 export const markAsDoneSchema = Joi.object({

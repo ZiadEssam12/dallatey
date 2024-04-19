@@ -6,6 +6,7 @@ io.on("connection", (socket) => {
     description: "This is a new post",
   });
   socket.on("disconnect", () => {
+    
     console.log("User disconnected");
   });
 });

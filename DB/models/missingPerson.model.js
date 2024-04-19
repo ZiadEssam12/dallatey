@@ -17,7 +17,7 @@ const missingPersonSchema = new mongoose.Schema(
     addedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true, 
+      required: true,
     },
     additionalInfo: { type: String },
   },
@@ -43,20 +43,24 @@ missingPersonSchema.query.search = function (keyword) {
   });
 };
 missingPersonSchema.post("save", async (doc) => {
-  const userSocket = await getActiveUsersInCity(doc.city);
-  console.log(userSocket);
+  const { city } = doc;
+  const userSocket = await getActiveUsersInCity(city);
   const notificationPromises = userSocket.map(async (user) => {
+    // console.log(user);
     await Notification.create({
       title: "New Notification",
-      description: `New Missing Person in ${doc.city}  was added to our Database`,
+      description: `New Missing Person in ${city}  was added to our Database`,
       user: user.userId, // Use the userId from userSocket
       missingPerson: doc._id,
     });
-    io.to(user.socketId).emit("newPost", {
-      title: `New Missing Person in ${doc.city} was added to our Database`,
-    });
   });
-
+  const socketIds = userSocket
+    .filter((user) => user.isActive)
+    .map((user) => user.socketId);
+  io.to(socketIds).emit("missingPerson", {
+    title: "New Notification",
+    description: `New Missing Person in ${city}  was added to our Database`,
+  });
   // Wait for all notifications to be created
   await Promise.all(notificationPromises);
 });

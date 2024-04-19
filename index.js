@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
   // save user's id and socket id in the database
 
   socket.on("disconnect", async () => {
+    console.log("user disconnected", socket.id);
     await SocketUser.findOneAndUpdate(
       { socketId: socket.id },
       { isActive: false }
