@@ -299,3 +299,20 @@ export const getAccountsByRecoveryEmail = asyncHandler(
     return res.json({ success: true, result: users });
   }
 );
+
+// ----------------------------------------------------------------------------------------- //
+// 10. Set user to admin
+export const setAdmin = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    return next(new Error("User not found", 404));
+  }
+  if (user.role === "admin") {
+    return next(new Error("User is already an admin", 400));
+  }
+
+  user.role = "admin";
+  await user.save();
+  return res.json({ success: true, message: "User is now an admin" });
+});

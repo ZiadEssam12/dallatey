@@ -1,4 +1,5 @@
 import joi from "joi";
+import { validateID } from "../../middleware/validation.middleware.js";
 
 export const signUpSchema = joi
   .object({
@@ -61,7 +62,6 @@ export const updatePassword = joi
   })
   .required();
 
-
 export const resetPassword = joi
   .object({
     identification: joi.string().required(),
@@ -73,5 +73,11 @@ export const resetPassword = joi
 export const sendOTP = joi
   .object({
     identification: joi.string().required(),
+  })
+  .required();
+
+export const setAdmin = joi
+  .object({
+    id: joi.string().custom(validateID).required(),
   })
   .required();

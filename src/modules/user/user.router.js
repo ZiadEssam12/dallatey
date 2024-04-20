@@ -3,6 +3,7 @@ import * as userController from "./user.controller.js";
 import * as userSchema from "./user.schema.js";
 import validation from "../../middleware/validation.middleware.js";
 import isAuthenticated from "../../middleware/isAuthenticated.js";
+import isAuthorized from "../../middleware/isAuthorized.js";
 // ----------------------------------------------------------------------------------------- //
 // init express router
 const router = Router();
@@ -40,19 +41,11 @@ router.delete("/", isAuthenticated, userController.deleteAccount);
 // ----------------------------------------------------------------------------------------- //
 // 5. Get Logged In User Data
 
-router.get(
-  "/",
-  isAuthenticated,
-  userController.getLoggedInUserData
-);
+router.get("/", isAuthenticated, userController.getLoggedInUserData);
 
 // ----------------------------------------------------------------------------------------- //
 // 6. Get Another User Profile
-router.get(
-  "/:id",
-  isAuthenticated,
-  userController.getAnotherUserProfile
-);
+router.get("/:id", isAuthenticated, userController.getAnotherUserProfile);
 
 // ----------------------------------------------------------------------------------------- //
 // 7. update password
@@ -75,5 +68,14 @@ router.patch(
   userController.resetPassword
 );
 
+// ----------------------------------------------------------------------------------------- //
+// 10. set user to admin
+router.patch(
+  "/admin/:id",
+  isAuthenticated,
+  isAuthorized("admin"),
+  validation(userSchema.setAdmin),
+  userController.setAdmin
+);
 
 export default router;
