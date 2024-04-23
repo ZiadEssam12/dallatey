@@ -12,7 +12,7 @@ const missingPersonSchema = new mongoose.Schema(
     locationOfLoss: { type: String, required: true },
     dateOfLoss: { type: String, required: true },
     description: { type: String, required: true },
-    images: [{ type: String, required: true }],
+    images: [{ type: String, required: true, unique: true }],
     status: { type: String, required: true },
     addedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +21,12 @@ const missingPersonSchema = new mongoose.Schema(
     },
     additionalInfo: { type: String },
   },
-  { timestamps: true, strictQuery: true }
+  {
+    timestamps: true,
+    strictQuery: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
 missingPersonSchema.query.paginate = function (page) {
@@ -42,6 +47,7 @@ missingPersonSchema.query.search = function (keyword) {
     },
   });
 };
+
 missingPersonSchema.post("save", async (doc) => {
   const { city } = doc;
   const userSocket = await getActiveUsersInCity(city);

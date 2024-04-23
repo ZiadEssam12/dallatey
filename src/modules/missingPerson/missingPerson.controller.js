@@ -1,6 +1,7 @@
 import MissingPerson from "../../../DB/models/missingPerson.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import path from "path";
+import axios from "axios";
 
 export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // check if the person is already exists or not by checking the model for the same person
@@ -55,6 +56,7 @@ export const getMissingPerson = asyncHandler(async (req, res, next) => {
     success: true,
     data: {
       missingPerson,
+      lenOfimages: missingPerson.images.length,
     },
   });
 });
@@ -104,5 +106,90 @@ export const getMissingNames = asyncHandler(async (req, res, next) => {
         .select("name status")
         .paginate(page),
     },
+  });
+});
+
+export const getMatch = asyncHandler(async (req, res, next) => {
+  // user will upload an image to this controller so it should check it to face rec model and return the response
+  // apply check model
+  // the result of the model is the name of the image that is matched with so
+  // the controller should return the missing person info who was matched
+  // const modelResult = call model
+  console.log(req.file.path);
+  const modelResult = await axios.post("http://127.0.0.1:5000/detect/one", {
+    photo: req.file.path,
+  });
+  const modelImage = modelResult.data.name;
+  if (!modelImage) {
+    return res.status(404).json({
+      success: false,
+      message: "Couldn't find any match in our database",
+    });
+  }
+
+  const missingPersonData = await MissingPerson.findOne({
+    images: { $in: [modelImage] },
+  }); // how to search in array
+  if (!missingPersonData) {
+    return res.status(404).json({
+      success: false,
+      message: "Missing person was not found in our DataBase",
+    });
+  }
+  let user = missingPersonData.addedBy ? missingPersonData.addedBy : null;
+  // send notification to the user
+  await Notification.create({
+    user,
+    missingPerson: missingPersonData._id,
+    title: "New Match",
+    description: `Your missing person ${missingPersonData.name} was matched with a new image in our database`,
+  });
+
+  MissingPerson.status = "done";
+  await MissingPerson.save();
+
+  return res.status(200).json({
+    success: true,
+    message:
+      "The image was matched successfully with one of our missing people in database",
+    data: missingPersonData,
+  });
+});
+
+export const getAllMatch = asyncHandler(async (req, res, next) => {
+  // user will upload an image to this controller so it should check it to face rec model and return the response
+  // apply check model
+  // the result of the model is the name of the image that is matched with so
+  // the controller should return the missing person info who was matched
+  // const modelResult = call model
+  if (!modelResult) {
+    return res.status(404).json({
+      success: false,
+      message: "Couldn't find any match in our database",
+    });
+  }
+
+  const missingPersonData = await MissingPerson.find({
+    images: { $in: [modelResult] },
+  }); // how to search in array
+
+  for (const missingPerson of missingPersonData) {
+    const user = missingPerson.addedBy;
+    // send notification to the user
+    await Notification.create({
+      user,
+      missingPerson: missingPerson._id,
+      title: "New Match",
+      description: `Your missing person ${missingPerson.name} was matched with a new image in our database`,
+    });
+    missingPerson.status = "done";
+    await missingPerson.save();
+  }
+
+  return res.status(200).json({
+    success: true,
+    message:
+      "The image was matched successfully with one of our missing people in database",
+    data: missingPersonData,
   });
 });

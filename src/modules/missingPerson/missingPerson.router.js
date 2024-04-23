@@ -50,4 +50,12 @@ router.get(
 router.get("/", isAuthenticated, missingPersonController.getAllMissingPerson);
 router.get("/:id", isAuthenticated, missingPersonController.getMissingPerson);
 
+// router.post(
+//   "/matchOne",
+//   isAuthenticated,
+//   isAuthorized("admin", "user"),
+//   fileUpload().single("image"),
+//   missingPersonController.getMatch
+// );
+
 export default router;

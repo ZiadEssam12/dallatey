@@ -18,6 +18,7 @@ export default function fileUpload() {
       cb(null, uploadDir); // specify the path where you want to save the files
     },
     filename: (req, file, cb) => {
+      console.log("original image name ", file.originalname);
       cb(null, Date.now() + file.originalname); // specify the filename
     },
   });
