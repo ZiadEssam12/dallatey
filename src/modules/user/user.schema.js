@@ -3,24 +3,21 @@ import { validateID } from "../../middleware/validation.middleware.js";
 
 export const signUpSchema = joi
   .object({
-    firstName: joi.string().required(),
-    lastName: joi.string().required(),
+    fullName: joi.string().required(),
     email: joi.string().email().required(),
     mobileNumber: joi
       .string()
       .pattern(/^01[0-2,5]\d{8}$/)
       .required(),
     password: joi.string().min(8).required(),
-    gender: joi.string().valid("male", "female").required(),
-    birthday: joi.date().required(),
-    address: joi
-      .object({
-        street: joi.string().required(),
-        city: joi.string().required(),
-        governorate: joi.string().required(),
-      })
-      .required(),
-    username: joi.string().required(),
+    confirmPassword: joi
+      .string()
+      .valid(joi.ref("password"))
+      .required()
+      .messages({
+        "any.only": "confirmPassword must match password",
+      }),
+    governorate: joi.string().required(),
   })
   .required();
 
@@ -39,19 +36,12 @@ export const signInSchema = joi
 //   - only the owner of the account can update his account data
 export const updateUserSchema = joi
   .object({
-    firstName: joi.string(),
-    lastName: joi.string(),
+    fullName: joi.string(),
     email: joi.string().email(),
     mobileNumber: joi.string().pattern(/^01[0-2,5]\d{8}$/),
     password: joi.string().min(8),
-    gender: joi.string().valid("male", "female"),
-    birthday: joi.date(),
-    address: joi.object({
-      street: joi.string(),
-      city: joi.string(),
-      governorate: joi.string(),
-    }),
-    username: joi.string(),
+    confirmPassword: joi.string().valid(joi.ref("password")),
+    governorate: joi.string(),
   })
   .required();
 

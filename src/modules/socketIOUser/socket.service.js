@@ -4,7 +4,7 @@ import User from "../../../DB/models/user.model.js";
 const getActiveUsersInCity = async (governorate) => {
   try {
     // 1. Get all users in the governorate
-    const usersInCity = await User.find({ "address.governorate": governorate });
+    const usersInCity = await User.find({ governorate });
 
     // 2. Find active socket users with matching user IDs
     const activeSocketUsers = await SocketUser.find({

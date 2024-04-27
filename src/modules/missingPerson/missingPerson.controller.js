@@ -35,7 +35,7 @@ export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
     .sort(`${sort} -createdAt`)
     .paginate(page)
     .search(keyword)
-    .populate("addedBy", "firstName lastName");
+    .populate("addedBy", "fullName");
   return res.status(200).json({
     success: true,
     data: {
@@ -115,7 +115,6 @@ export const getMatch = asyncHandler(async (req, res, next) => {
   // the result of the model is the name of the image that is matched with so
   // the controller should return the missing person info who was matched
   // const modelResult = call model
-  console.log(req.file.path);
   const modelResult = await axios.post("http://127.0.0.1:5000/detect/one", {
     photo: req.file.path,
   });
@@ -156,7 +155,7 @@ export const getMatch = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getAllMatch = asyncHandler(async (req, res, next) => {
+export const getAllMatches = asyncHandler(async (req, res, next) => {
   // user will upload an image to this controller so it should check it to face rec model and return the response
   // apply check model
   // the result of the model is the name of the image that is matched with so
