@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../../DB/models/user.model.js";
-const isAuthenticated = async (req, res, next) => {
+import asyncHandler from "../utils/asyncHandler.js";
+const isAuthenticated = asyncHandler(async (req, res, next) => {
   // getting the token from the request headers
   let { token } = req.headers;
 
@@ -29,6 +30,6 @@ const isAuthenticated = async (req, res, next) => {
   // saving the user in the request object
   req.user = user;
   return next();
-};
+});
 
 export default isAuthenticated;
