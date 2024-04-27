@@ -50,7 +50,7 @@ export const getMissingPerson = asyncHandler(async (req, res, next) => {
 
   const missingPerson = await MissingPerson.findById(req.params.id).populate(
     "addedBy",
-    "firstName lastName"
+    "fullName"
   );
   return res.status(200).json({
     success: true,

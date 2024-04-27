@@ -23,7 +23,7 @@ export const signup = asyncHandler(async (req, res, next) => {
 
   /// check if the user already exists
   await User.findOne({
-    $or: [{ email: data.email }, { mobileNumber: data.mobileNumber }],
+    email: data.email,
   }).then((user) => {
     if (user) {
       return next(new Error("User already exists", 409));
