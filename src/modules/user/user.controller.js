@@ -25,7 +25,7 @@ export const signup = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({
     email: data.email,
   });
-  console.log(...data);
+  console.log(data);
   if (user) {
     return next(new Error("User already exists", 400));
   }
