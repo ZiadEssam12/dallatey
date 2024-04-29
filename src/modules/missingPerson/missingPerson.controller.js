@@ -38,6 +38,7 @@ export const getAllMissingPerson = asyncHandler(async (req, res, next) => {
     .populate("addedBy", "fullName");
   return res.status(200).json({
     success: true,
+    page: page ? parseInt(page) : 1,
     data: {
       missingPersons,
     },

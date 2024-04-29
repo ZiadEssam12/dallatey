@@ -8,6 +8,7 @@ import isAuthorized from "../../middleware/isAuthorized.js";
 // init express router
 const router = Router();
 
+
 // ----------------------------------------------------------------------------------------- //
 // # User APIs
 // 1. Sign up
