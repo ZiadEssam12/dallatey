@@ -80,10 +80,7 @@ export const markAsDone = asyncHandler(async (req, res, next) => {
   // return response
   const missingPerson = req.missingPerson;
   if (missingPerson.status === "done") {
-    return res.status(400).json({
-      success: false,
-      message: "Missing person was already marked as done",
-    });
+    return next(new Error("Missing person is already marked as done", 400));
   }
   missingPerson.status = "done";
   await missingPerson.save();
@@ -120,20 +117,14 @@ export const getMatch = asyncHandler(async (req, res, next) => {
   });
   const modelImage = modelResult.data.name;
   if (!modelImage) {
-    return res.status(404).json({
-      success: false,
-      message: "Couldn't find any match in our database",
-    });
+    return next(new Error("Couldn't find any match in our database", 404));
   }
 
   const missingPersonData = await MissingPerson.findOne({
     images: { $in: [modelImage] },
   }); // how to search in array
   if (!missingPersonData) {
-    return res.status(404).json({
-      success: false,
-      message: "Missing person was not found in our DataBase",
-    });
+    return next(new Error("Couldn't find any match in our database", 404));
   }
   let user = missingPersonData.addedBy ? missingPersonData.addedBy : null;
   // send notification to the user
@@ -162,10 +153,7 @@ export const getAllMatches = asyncHandler(async (req, res, next) => {
   // the controller should return the missing person info who was matched
   // const modelResult = call model
   if (!modelResult) {
-    return res.status(404).json({
-      success: false,
-      message: "Couldn't find any match in our database",
-    });
+    return next(new Error("Couldn't find any match in our database", 404));
   }
 
   const missingPersonData = await MissingPerson.find({

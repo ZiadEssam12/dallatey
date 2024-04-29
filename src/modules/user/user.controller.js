@@ -22,13 +22,14 @@ export const signup = asyncHandler(async (req, res, next) => {
   let data = req.body;
 
   /// check if the user already exists
-  await User.findOne({
+  const user = await User.findOne({
     email: data.email,
-  }).then((user) => {
-    if (user) {
-      return next(new Error("User already exists", 409));
-    }
   });
+  console.log(...data);
+  if (user) {
+    return next(new Error("User already exists", 400));
+  }
+
   const hashedPassword = bcrypt.hashSync(
     data.password,
     Number(process.env.SALT_ROUNDS)

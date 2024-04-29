@@ -15,19 +15,15 @@ export const getNotifications = asyncHandler(async (req, res, next) => {
 export const markNotificationAsRead = asyncHandler(async (req, res, next) => {
   const notification = await Notification.findById(req.params.id);
   if (!notification) {
-    return res.status(404).json({
-      success: false,
-      message: "Notification not found",
-    });
+    return next(new Error("Notification not found", 404));
   }
   if (
     notification.user.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
-    return res.status(403).json({
-      success: false,
-      message: "You are not authorized to mark this notification as read",
-    });
+    return next(
+      new Error("You are not authorized to update this notification", 401)
+    );
   }
 
   notification.seen = true;

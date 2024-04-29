@@ -30,10 +30,7 @@ export const disconnectUserSocket = asyncHandler(async (req, res, next) => {
   // check if the person is already exists or not by checking the model for the same person
   const userSocket = await SocketUser.findOne({ userId: req.user.id });
   if (!userSocket) {
-    return res.status(404).json({
-      success: false,
-      message: "socket not found",
-    });
+    return next(new Error("Socket not found", 404));
   }
   userSocket.isActive = false;
   await userSocket.save();
