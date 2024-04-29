@@ -49,6 +49,7 @@ app.use((err, req, res, next) => {
       err.message.split("{").splice(1).join("{").split("}")[0] +
       "already exists";
   }
+  console.log(err);
   return res.status(err.statusCode || 500).json({
     status: "fail",
     message: err.message,
