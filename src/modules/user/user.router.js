@@ -13,6 +13,9 @@ const router = Router();
 // 1. Sign up
 router.post(
   "/signup",
+  (req, res, next) => {
+    console.log("data from middleware : ", ...req.body);
+  },
   validation(userSchema.signUpSchema),
   userController.signup
 );
