@@ -15,26 +15,30 @@ export const addMissingPersonSchema = Joi.object({
   name: Joi.string().required(),
   gender: Joi.string().valid("male", "female").required(),
   age: Joi.number().min(0).required(),
-  city: Joi.string().required(),
   locationOfLoss: Joi.string().required(),
   dateOfLoss: Joi.date().required(),
   description: Joi.string().required(),
   // images: Joi.array().items(Joi.string()).required(), /// already checked in the middleware
   additonalInfo: Joi.string(),
-  status: Joi.string().valid("missing", "found").required(),
+  status: Joi.string().valid("missing", "found", "done").required(),
+  mobileNumber: Joi.string()
+    .pattern(/^01[0-2,5]\d{8}$/)
+    .required(),
 });
 
 export const updateMissingPersonSchema = Joi.object({
   name: Joi.string(),
   gender: Joi.string().valid("male", "female"),
   age: Joi.number().min(0),
-  city: Joi.string(),
   locationOfLoss: Joi.string(),
   dateOfLoss: Joi.date(),
   description: Joi.string(),
   images: Joi.array().items(Joi.string()),
   additonalInfo: Joi.string(),
   id: Joi.string().custom(validateID).required(),
+  mobileNumber: Joi.string()
+    .pattern(/^01[0-2,5]\d{8}$/)
+    .required(),
 });
 
 export const markAsDoneSchema = Joi.object({
