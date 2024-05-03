@@ -215,10 +215,7 @@ export const sendOTP = asyncHandler(async (req, res, next) => {
     charset: "numeric",
   });
 
-  const query = {
-    $or: [{ email: identification }, { mobileNumber: identification }],
-  };
-  const user = await User.findOne(query);
+  const user = await User.findOne({ email: identification });
 
   if (!user) {
     return next(new Error("User not found", 404));

@@ -73,15 +73,15 @@ export const sendOTP = joi
   })
   .required();
 
-export const setAdmin = joi
-  .object({
-    id: joi.string().custom(validateID).required(),
-  })
-  .required();
-
 export const checkOTP = joi
   .object({
     identification: joi.string().required(),
     code: joi.string().required(),
+  })
+  .required();
+
+export const setAdmin = joi
+  .object({
+    id: joi.string().custom(validateID).required(),
   })
   .required();
