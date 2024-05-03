@@ -280,14 +280,19 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new Error("User not found", 404));
   }
-  const resetCode = await ResetCode.findOne({ userId: user._id, code });
+
+  if (confirmNewPassword !== newPassword) {
+    return next(new Error("Passwords don't match", 400));
+  }
+
+  const resetCode = await ResetCode.findOne({ userId: user._id });
 
   // updating the password
   user.password = bcrypt.hashSync(newPassword, Number(process.env.SALT_ROUNDS));
   await user.save();
 
   // deleting the reset code
-  await resetCode.deleteOne();
+  await resetCode.deleteMany();
 
   return res
     .status(200)

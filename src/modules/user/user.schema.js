@@ -57,6 +57,13 @@ export const resetPassword = joi
     identification: joi.string().required(),
     code: joi.string().required(),
     newPassword: joi.string().min(8).required(),
+    confirmNewPassword: joi
+      .string()
+      .valid(joi.ref("newPassword"))
+      .required()
+      .messages({
+        "any.only": "confirmNewPassword must match newPassword",
+      }),
   })
   .required();
 
