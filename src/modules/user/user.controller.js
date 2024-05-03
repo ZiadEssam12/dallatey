@@ -243,22 +243,10 @@ export const sendOTP = asyncHandler(async (req, res, next) => {
   });
 });
 
-//   - User must enter his email or mobile number
-//   - User must enter the OTP
-//   - User must enter the newPassword
-//   - Find the user in the database
-//   - Find the OTP in the database
-//   - update the user password
-//   - delete the OTP from the database
-//   - send the response
-export const resetPassword = asyncHandler(async (req, res, next) => {
-  const { identification, code, newPassword } = req.body;
+export const checkOTP = asyncHandler(async (req, res, next) => {
+  const { identification, code } = req.body;
 
-  const query = {
-    $or: [{ email: identification }, { mobileNumber: identification }],
-  };
-
-  const user = await User.findOne(query);
+  const user = await User.findOne({ email: identification });
   if (!user) {
     return next(new Error("User not found", 404));
   }
@@ -272,6 +260,28 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
   ) {
     return next(new Error("Wrong code", 401));
   }
+
+  return res.json({ success: true, message: "Code is correct" });
+});
+
+//   - User must enter his email or mobile number
+//   - User must enter the OTP
+//   - User must enter the newPassword
+//   - Find the user in the database
+//   - Find the OTP in the database
+//   - update the user password
+//   - delete the OTP from the database
+//   - send the response
+
+export const resetPassword = asyncHandler(async (req, res, next) => {
+  const { identification, code, newPassword } = req.body;
+
+  const user = await User.findOne({ email: identification });
+  if (!user) {
+    return next(new Error("User not found", 404));
+  }
+  const resetCode = await ResetCode.findOne({ userId: user._id, code });
+
   // updating the password
   user.password = bcrypt.hashSync(newPassword, Number(process.env.SALT_ROUNDS));
   await user.save();

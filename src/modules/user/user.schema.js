@@ -71,3 +71,10 @@ export const setAdmin = joi
     id: joi.string().custom(validateID).required(),
   })
   .required();
+
+export const checkOTP = joi
+  .object({
+    identification: joi.string().required(),
+    code: joi.string().required(),
+  })
+  .required();

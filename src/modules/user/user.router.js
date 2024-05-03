@@ -8,7 +8,6 @@ import isAuthorized from "../../middleware/isAuthorized.js";
 // init express router
 const router = Router();
 
-
 // ----------------------------------------------------------------------------------------- //
 // # User APIs
 // 1. Sign up
@@ -66,6 +65,12 @@ router.patch(
 // ----------------------------------------------------------------------------------------- //
 // 8. send OTP
 router.post("/sendOTP", validation(userSchema.sendOTP), userController.sendOTP);
+
+router.post(
+  "/checkOTP",
+  validation(userSchema.checkOTP),
+  userController.checkOTP
+);
 
 // ----------------------------------------------------------------------------------------- //
 // 9. verify OTP and reset password
