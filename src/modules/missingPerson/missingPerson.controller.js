@@ -98,6 +98,7 @@ export const getMissingNames = asyncHandler(async (req, res, next) => {
   const { name, page } = req.query;
   return res.status(200).json({
     success: true,
+    page: page ? parseInt(page) : 1,
     data: {
       missingPersons: await MissingPerson.find()
         .search(name)
