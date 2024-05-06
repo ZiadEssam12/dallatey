@@ -278,10 +278,6 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new Error("User not found", 404));
   }
 
-  if (confirmNewPassword !== newPassword) {
-    return next(new Error("Passwords don't match", 400));
-  }
-
   const resetCode = await ResetCode.findOne({ userId: user._id });
 
   // updating the password
