@@ -10,6 +10,7 @@ const missingPersonSchema = new mongoose.Schema(
     age: { type: Number, min: 0, required: true },
     locationOfLoss: { type: String, required: true },
     dateOfLoss: { type: String, required: true },
+    city: { type: String, required: true },
     description: { type: String, required: true },
     images: [{ type: String, required: true, unique: true }],
     status: { type: String, required: true },
@@ -18,7 +19,6 @@ const missingPersonSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    additionalInfo: { type: String },
     mobileNumber: { type: String, required: true },
   },
   {

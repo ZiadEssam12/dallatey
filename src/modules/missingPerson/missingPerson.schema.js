@@ -20,7 +20,6 @@ export const addMissingPersonSchema = Joi.object({
   dateOfLoss: Joi.date().required(),
   description: Joi.string().required(),
   // images: Joi.array().items(Joi.string()).required(), /// already checked in the middleware
-  additonalInfo: Joi.string(),
   status: Joi.string().valid("missing", "found", "done").required(),
   mobileNumber: Joi.string()
     .pattern(/^01[0-2,5]\d{8}$/)
@@ -36,7 +35,6 @@ export const updateMissingPersonSchema = Joi.object({
   dateOfLoss: Joi.date(),
   description: Joi.string(),
   images: Joi.array().items(Joi.string()),
-  additonalInfo: Joi.string(),
   id: Joi.string().custom(validateID).required(),
   mobileNumber: Joi.string()
     .pattern(/^01[0-2,5]\d{8}$/)
