@@ -16,6 +16,7 @@ export const addMissingPersonSchema = Joi.object({
   gender: Joi.string().valid("male", "female").required(),
   age: Joi.number().min(0).required(),
   locationOfLoss: Joi.string().required(),
+  city: Joi.string().required(),
   dateOfLoss: Joi.date().required(),
   description: Joi.string().required(),
   // images: Joi.array().items(Joi.string()).required(), /// already checked in the middleware
@@ -31,6 +32,7 @@ export const updateMissingPersonSchema = Joi.object({
   gender: Joi.string().valid("male", "female"),
   age: Joi.number().min(0),
   locationOfLoss: Joi.string(),
+  city: Joi.string(),
   dateOfLoss: Joi.date(),
   description: Joi.string(),
   images: Joi.array().items(Joi.string()),
