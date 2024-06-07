@@ -1,7 +1,7 @@
 import MissingPerson from "../../../DB/models/missingPerson.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import path from "path";
-import axios from "axios";
+import Notification from "../../../DB/models/notification.model.js";
 
 export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // check if the person is already exists or not by checking the model for the same person
@@ -114,31 +114,35 @@ export const getMatch = asyncHandler(async (req, res, next) => {
   // the result of the model is the name of the image that is matched with so
   // the controller should return the missing person info who was matched
   // const modelResult = call model
-  const modelResult = await axios.post("http://127.0.0.1:5000/detect/one", {
-    photo: req.file.path,
-  });
-  const modelImage = modelResult.data.name;
-  if (!modelImage) {
-    return next(new Error("Couldn't find any match in our database", 404));
-  }
-
+  // const modelResult = await axios.post("http://127.0.0.1:5000/detect/one", {
+  //   photo: req.file.path,
+  // });
+  // const modelImage = modelResult.data.name;
+  // if (!modelImage) {
+  //   return next(new Error("Couldn't find any match in our database", 404));
+  // }
+  const modelImage = req.modelResult;
+  console.log(modelImage);
   const missingPersonData = await MissingPerson.findOne({
     images: { $in: [modelImage] },
   }); // how to search in array
   if (!missingPersonData) {
     return next(new Error("Couldn't find any match in our database", 404));
   }
-  let user = missingPersonData.addedBy ? missingPersonData.addedBy : null;
+  // let user = missingPersonData.addedBy ? missingPersonData.addedBy : null;
   // send notification to the user
-  await Notification.create({
-    user,
-    missingPerson: missingPersonData._id,
-    title: "New Match",
-    description: `Your missing person ${missingPersonData.name} was matched with a new image in our database`,
-  });
 
-  MissingPerson.status = "done";
-  await MissingPerson.save();
+  if (missingPersonData.addedBy) {
+    await Notification.create({
+      user: missingPersonData.addedBy,
+      missingPerson: missingPersonData._id,
+      title: "New Match",
+      description: `Your missing person ${missingPersonData.name} was matched with a new image in our database`,
+    });
+  }
+
+  missingPersonData.status = "done";
+  await missingPersonData.save();
 
   return res.status(200).json({
     success: true,
@@ -154,31 +158,30 @@ export const getAllMatches = asyncHandler(async (req, res, next) => {
   // the result of the model is the name of the image that is matched with so
   // the controller should return the missing person info who was matched
   // const modelResult = call model
-  if (!modelResult) {
+  let modelImages = req.modelResult;
+  modelImages = modelImages.split(",");
+  if (!modelImages) {
     return next(new Error("Couldn't find any match in our database", 404));
   }
+  let matchingPersons = []; // Array to store matching documents
 
-  const missingPersonData = await MissingPerson.find({
-    images: { $in: [modelResult] },
-  }); // how to search in array
-
-  for (const missingPerson of missingPersonData) {
-    const user = missingPerson.addedBy;
-    // send notification to the user
-    await Notification.create({
-      user,
-      missingPerson: missingPerson._id,
-      title: "New Match",
-      description: `Your missing person ${missingPerson.name} was matched with a new image in our database`,
+  for (const imageName of modelImages) {
+    const missingPersonData = await MissingPerson.findOne({
+      images: { $in: [imageName] }, // Search for a document with the image
     });
-    missingPerson.status = "done";
-    await missingPerson.save();
+
+    if (missingPersonData) {
+      missingPersonData.status = "done";
+      await missingPersonData.save();
+      matchingPersons.push(missingPersonData); // Add matching document to the array
+    }
   }
 
+  matchingPersons = [...new Set(matchingPersons)];
   return res.status(200).json({
     success: true,
     message:
-      "The image was matched successfully with one of our missing people in database",
-    data: missingPersonData,
+      "The image was matched successfully with one or more of our missing people in database",
+    data: matchingPersons,
   });
 });

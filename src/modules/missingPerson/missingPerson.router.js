@@ -7,6 +7,7 @@ import isAuthorized from "../../middleware/isAuthorized.js";
 import validation from "../../middleware/validation.middleware.js";
 import isExists from "../../middleware/isExists.js";
 import fileUpload from "../../utils/cloudUpload.js";
+import callFaceRecModel from "../../middleware/callFaceRecModel.js";
 // ------
 // --------
 // ----------
@@ -50,12 +51,21 @@ router.get(
 router.get("/", isAuthenticated, missingPersonController.getAllMissingPerson);
 router.get("/:id", isAuthenticated, missingPersonController.getMissingPerson);
 
-// router.post(
-//   "/matchOne",
-//   isAuthenticated,
-//   isAuthorized("admin", "user"),
-//   fileUpload().single("image"),
-//   missingPersonController.getMatch
-// );
+router.post(
+  "/matchOne",
+  isAuthenticated,
+  isAuthorized("admin", "user"),
+  fileUpload().single("image"),
+  callFaceRecModel("one"),
+  missingPersonController.getMatch
+);
+router.post(
+  "/matchAll",
+  isAuthenticated,
+  isAuthorized("admin", "user"),
+  fileUpload().single("image"),
+  callFaceRecModel("all"),
+  missingPersonController.getAllMatches
+);
 
 export default router;

@@ -5,21 +5,20 @@ import Notification from "./notification.model.js";
 
 const missingPersonSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    gender: { type: String, enum: ["male", "female"], required: true },
-    age: { type: Number, min: 0, required: true },
-    locationOfLoss: { type: String, required: true },
-    dateOfLoss: { type: String, required: true },
-    city: { type: String, required: true },
-    description: { type: String, required: true },
-    images: [{ type: String, required: true, unique: true }],
-    status: { type: String, required: true },
+    name: { type: String },
+    gender: { type: String, enum: ["male", "female"] },
+    age: { type: Number, min: 0 },
+    locationOfLoss: { type: String },
+    dateOfLoss: { type: String },
+    city: { type: String },
+    description: { type: String },
+    images: [{ type: String, unique: true }],
+    status: { type: String },
     addedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
-    mobileNumber: { type: String, required: true },
+    mobileNumber: { type: String },
   },
   {
     timestamps: true,
