@@ -122,7 +122,7 @@ export const getMatch = asyncHandler(async (req, res, next) => {
   //   return next(new Error("Couldn't find any match in our database", 404));
   // }
   const modelImage = req.modelResult;
-  console.log(modelImage);
+
   const missingPersonData = await MissingPerson.findOne({
     images: { $in: [modelImage] },
   }); // how to search in array
@@ -159,7 +159,7 @@ export const getAllMatches = asyncHandler(async (req, res, next) => {
   // the controller should return the missing person info who was matched
   // const modelResult = call model
   let modelImages = req.modelResult;
-  modelImages = modelImages.split(",");
+  // modelImages = modelImages.split(",");
   if (!modelImages) {
     return next(new Error("Couldn't find any match in our database", 404));
   }
