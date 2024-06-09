@@ -14,7 +14,7 @@ export const checkUserSocket = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const newUser = await SocketUser.create({
+  await SocketUser.create({
     socketId: req.body.socketId,
     userId: req.user.id,
     address: req.body.address,

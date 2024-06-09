@@ -11,6 +11,7 @@ router.get(
   "/",
   isAuthenticated,
   isAuthorized("user", "admin"),
+  validation(notificationSchema.getNotificationsSchema),
   notificationController.getNotifications
 );
 

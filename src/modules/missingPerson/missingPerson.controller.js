@@ -2,6 +2,7 @@ import MissingPerson from "../../../DB/models/missingPerson.model.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import path from "path";
 import Notification from "../../../DB/models/notification.model.js";
+import cloudinary from "../../utils/cloud.js";
 
 export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // check if the person is already exists or not by checking the model for the same person
@@ -12,6 +13,22 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // return response
   // create the missing person
   //   return res.json(req.body);
+  for (const image of req.files) {
+    await cloudinary.uploader.upload(
+      image.path,
+      {
+        folder: "missingPeople",
+        public_id: path.basename(image.path),
+        use_filename: true,
+      },
+
+      function (error, result) {
+        if (error) {
+          return next(new Error(error, 400));
+        }
+      }
+    );
+  }
   const person = await MissingPerson.create({
     ...req.body,
     addedBy: req.user._id,

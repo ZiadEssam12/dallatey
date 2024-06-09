@@ -9,7 +9,6 @@ const validation = (schema) => {
   return (req, res, next) => {
     // abortEarly: false => return all errors not just the first one
     const data = { ...req.body, ...req.params, ...req.query };
-    console.log("input data is:", data);
     const validateResult = schema.validate(data, { abortEarly: false });
     if (validateResult.error) {
       // map the error details to a new array
