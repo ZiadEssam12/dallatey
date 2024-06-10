@@ -13,6 +13,13 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+userSchema.query.paginate = function (page) {
+  page = page < 1 || !page || isNaN(page) ? 1 : page;
+  const limit = 20;
+  const skip = limit * (page - 1);
+  return this.skip(skip).limit(limit);
+};
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

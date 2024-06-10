@@ -51,7 +51,7 @@ router.get("/", isAuthenticated, userController.getLoggedInUserData);
 
 // ----------------------------------------------------------------------------------------- //
 // 6. Get Another User Profile
-router.get("/:id", isAuthenticated, userController.getAnotherUserProfile);
+// router.get("/:id", isAuthenticated, userController.getAnotherUserProfile);
 
 // ----------------------------------------------------------------------------------------- //
 // 7. update password
@@ -78,6 +78,14 @@ router.patch(
   "/resetPassword",
   validation(userSchema.resetPassword),
   userController.resetPassword
+);
+
+// ----------------------------------------------------------------------------------------- //
+router.get(
+  "/posts",
+  isAuthenticated,
+  isAuthorized("user", "admin"),
+  userController.getUserPosts
 );
 
 // ----------------------------------------------------------------------------------------- //

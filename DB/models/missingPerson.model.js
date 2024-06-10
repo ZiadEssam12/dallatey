@@ -48,26 +48,28 @@ missingPersonSchema.query.search = function (keyword) {
 };
 
 missingPersonSchema.post("save", async (doc) => {
-  const { city } = doc;
-  const userSocket = await getActiveUsersInCity(city);
-  const notificationPromises = userSocket.map(async (user) => {
-    // console.log(user);
-    await Notification.create({
+  if (doc.isNew) {
+    const { city } = doc;
+    const userSocket = await getActiveUsersInCity(city);
+    const notificationPromises = userSocket.map(async (user) => {
+      // console.log(user);
+      await Notification.create({
+        title: "New Notification",
+        description: `New Missing Person in ${city}  was added to our Database`,
+        user: user.userId, // Use the userId from userSocket
+        missingPerson: doc._id,
+      });
+    });
+    const socketIds = userSocket
+      .filter((user) => user.isActive)
+      .map((user) => user.socketId);
+    io.to(socketIds).emit("missingPerson", {
       title: "New Notification",
       description: `New Missing Person in ${city}  was added to our Database`,
-      user: user.userId, // Use the userId from userSocket
-      missingPerson: doc._id,
     });
-  });
-  const socketIds = userSocket
-    .filter((user) => user.isActive)
-    .map((user) => user.socketId);
-  io.to(socketIds).emit("missingPerson", {
-    title: "New Notification",
-    description: `New Missing Person in ${city}  was added to our Database`,
-  });
-  // Wait for all notifications to be created
-  await Promise.all(notificationPromises);
+    // Wait for all notifications to be created
+    await Promise.all(notificationPromises);
+  }
 });
 const MissingPerson = mongoose.model("MissingPerson", missingPersonSchema);
 export default MissingPerson;

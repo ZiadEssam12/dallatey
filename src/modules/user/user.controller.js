@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import Randomstring from "randomstring";
 import ResetCode from "../../../DB/models/resetCode.model.js";
 import sendingEmail from "../../utils/sendingEmail.js";
+import MissingPerson from "../../../DB/models/missingPerson.model.js";
 // # User APIs
 
 // ----------------------------------------------------------------------------------------- //
@@ -293,22 +294,19 @@ export const resetPassword = asyncHandler(async (req, res, next) => {
     .json({ success: true, message: `Password reset successfully` });
 });
 // ----------------------------------------------------------------------------------------- //
-// 9. Get all accounts associated to a specific recovery Email
+// 9. Get all posted missing people for a user
 
-//    - User must enter the recoveryEmail
-//    - Find the user in the database
-//    - return all accounts associated to this recoveryEmail
-//    - return the response
-export const getAccountsByRecoveryEmail = asyncHandler(
-  async (req, res, next) => {
-    const { recoveryEmail } = req.body;
-    if (!recoveryEmail) {
-      return next(new Error("Recovery email is missing", 400));
-    }
-    const users = await User.find({ recoveryEmail }).select("-password");
-    return res.json({ success: true, result: users });
-  }
-);
+export const getUserPosts = asyncHandler(async (req, res, next) => {
+  const { page } = req.query;
+  const userPosts = await MissingPerson.find({ addedBy: req.user.id })
+    .sort("-createdAt")
+    .paginate(page);
+
+  return res.status(200).json({
+    success: true,
+    data: userPosts,
+  });
+});
 
 // ----------------------------------------------------------------------------------------- //
 // 10. Set user to admin
