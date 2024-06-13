@@ -202,3 +202,52 @@ export const getAllMatches = asyncHandler(async (req, res, next) => {
     data: matchingPersons,
   });
 });
+
+export const getMissingByGovernorate = asyncHandler(async (req, res, next) => {
+  let { governorate, page } = req.query;
+  if (!governorate) {
+    return next(new Error("Please provide a governorate", 400));
+  }
+
+  governorate = governorate.replace(/^\w/, (c) => c.toUpperCase());
+
+  let governorates = [
+    "Alexandria",
+    "Aswan",
+    "Asyut",
+    "Beheira",
+    "Beni Suef",
+    "Cairo",
+    "Dakahlia",
+    "Damietta",
+    "Faiyum",
+    "Gharbia",
+    "Giza",
+    "Ismailia",
+    "Kafr El Sheikh",
+    "Luxor",
+    "Matrouh",
+    "Minya",
+    "Monufia",
+    "New Valley",
+    "North Sinai",
+    "Port Said",
+    "Qalyubia",
+    "Qena",
+    "Red Sea",
+    "Sharqia",
+    "Sohag",
+    "South Sinai",
+    "Suez",
+  ];
+  if (!governorates.includes(governorate)) {
+    return next(new Error("Please provide a valid governorate", 400));
+  }
+
+  return res.status(200).json({
+    success: true,
+    page: page ? parseInt(page) : 1,
+    data: await MissingPerson.find({ governorate }).paginate(page),
+  });
+  
+});

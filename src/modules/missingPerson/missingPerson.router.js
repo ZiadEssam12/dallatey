@@ -68,4 +68,11 @@ router.post(
   missingPersonController.getAllMatches
 );
 
+router.get(
+  "/MissingByGovernorate",
+  isAuthenticated,
+  isAuthorized("admin", "user"),
+  missingPersonController.getMissingByGovernorate
+);
+
 export default router;
