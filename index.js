@@ -25,7 +25,7 @@ await connection();
 // using cors and json middleware
 app.use(express.json());
 app.use(cors());
-app.use("/images" , express.static("uploads"));
+app.use("/images" , express.static("src/uploads"));
 app.get('/files', async (req, res) => {
   try {
     const __filename = fileURLToPath(import.meta.url);
