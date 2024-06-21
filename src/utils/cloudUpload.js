@@ -31,7 +31,7 @@ export default function fileUpload() {
     if (!file.mimetype.startsWith("image/")) {
       cb(new Error("Only images are allowed !"), false);
     } 
-
+      print(`image saved in  ${uploadDir} `)
       cb(null, true);
   };
 
