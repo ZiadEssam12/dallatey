@@ -8,6 +8,10 @@ import notificationRouter from "./src/modules/notifications/notification.router.
 import missingPersonRouter from "./src/modules/missingPerson/missingPerson.router.js";
 import { Server as SocketIOServer } from "socket.io";
 import SocketUser from "./DB/models/socketUser.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs/promises'; // Use fs/promises for async/await
+
 
 // usign dotenv to load environment variables
 dotenv.config();
@@ -22,6 +26,29 @@ await connection();
 app.use(express.json());
 app.use(cors());
 app.use("/images" , express.static("uploads"));
+app.get('/files', async (req, res) => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    // Get the directory of the current file
+    const __dirname = path.dirname(__filename);
+
+    // Define the path to the images directory
+
+    const folderPath = path.join(__dirname, 'src/uploads');
+    const files = await fs.readdir(folderPath); 
+
+    const fileCount = files.length;
+    res.json({
+      fileCount: fileCount,
+      filenames: files
+    });
+
+  } catch (err) {
+    console.error('Error reading directory:', err);
+    res.status(500).send('Error reading directory');
+  }
+});
+
 // ----------------------------------------------------------------------------------------- //
 // init the routes
 app.use("/user", userRouter);
