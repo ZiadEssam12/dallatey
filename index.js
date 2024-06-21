@@ -21,7 +21,7 @@ await connection();
 // using cors and json middleware
 app.use(express.json());
 app.use(cors());
-
+app.use("/images" , express.static("uploads"));
 // ----------------------------------------------------------------------------------------- //
 // init the routes
 app.use("/user", userRouter);
