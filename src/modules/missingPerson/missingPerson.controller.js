@@ -13,22 +13,28 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   // return response
   // create the missing person
   //   return res.json(req.body);
-  for (const image of req.files) {
-    await cloudinary.uploader.upload(
-      image.path,
-      {
-        folder: "missingPeople",
-        public_id: path.basename(image.path),
-        use_filename: true,
-      },
 
-      function (error, result) {
-        if (error) {
-          return next(new Error(error, 400));
-        }
-      }
-    );
+  // for (const image of req.files) {
+  //   await cloudinary.uploader.upload(
+  //     image.path,
+  //     {
+  //       folder: "missingPeople",
+  //       public_id: path.basename(image.path),
+  //       use_filename: true,
+  //     },
+
+  //     function (error, result) {
+  //       if (error) {
+  //         return next(new Error(error, 400));
+  //       }
+  //     }
+  //   );
+  // }
+  
+  if (req.files.length === 0) {
+    return next(new Error("You should at least provide one image", 400));
   }
+
   const person = await MissingPerson.create({
     ...req.body,
     addedBy: req.user._id,

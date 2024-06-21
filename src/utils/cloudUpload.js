@@ -18,20 +18,21 @@ export default function fileUpload() {
       cb(null, uploadDir); // specify the path where you want to save the files
     },
     filename: (req, file, cb) => {
-      console.log("original image name ", file.originalname);
+      
       cb(null, Date.now() + file.originalname); // specify the filename
     },
   });
 
   const fileFilter = (req, file, cb) => {
+
     if (!file) {
       cb(new Error("No image provided!"), false);
-    } else if (!file.mimetype.startsWith("image/")) {
+    } 
+    if (!file.mimetype.startsWith("image/")) {
       cb(new Error("Only images are allowed !"), false);
-    } else {
-      // if the file is an image
+    } 
+
       cb(null, true);
-    }
   };
 
   const multerUpload = multer({ storage, fileFilter });

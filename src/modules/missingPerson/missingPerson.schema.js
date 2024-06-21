@@ -19,7 +19,10 @@ export const addMissingPersonSchema = Joi.object({
   city: Joi.string().required(),
   dateOfLoss: Joi.date().required(),
   description: Joi.string().required(),
-  // images: Joi.array().items(Joi.string()).required(), /// already checked in the middleware
+  images: Joi.array().items(Joi.string()).messages({
+    "any.required": `You should at least provide one image`,
+    "array.base": `You should at least provide one image`, // Optional, for clarity
+  }),
   status: Joi.string().valid("missing", "found", "done").required(),
   mobileNumber: Joi.string()
     .pattern(/^01[0-2,5]\d{8}$/)
