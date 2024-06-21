@@ -18,7 +18,6 @@ export default function fileUpload() {
       cb(null, uploadDir); // specify the path where you want to save the files
     },
     filename: (req, file, cb) => {
-      
       cb(null, Date.now() + file.originalname); // specify the filename
     },
   });
@@ -31,7 +30,7 @@ export default function fileUpload() {
     if (!file.mimetype.startsWith("image/")) {
       cb(new Error("Only images are allowed !"), false);
     } 
-      print(`image saved in  ${uploadDir} `)
+
       cb(null, true);
   };
 
