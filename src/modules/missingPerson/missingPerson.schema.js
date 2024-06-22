@@ -47,3 +47,7 @@ export const updateMissingPersonSchema = Joi.object({
 export const markAsDoneSchema = Joi.object({
   id: Joi.string().custom(validateID).required(),
 });
+
+export const matchOneSchema = Joi.object({
+  image: Joi.string().required(),
+});

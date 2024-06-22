@@ -18,6 +18,9 @@ const callFaceRecModel = (endpoint) => {
   //   return next();
   // });
   return async (req, res, next) => {
+    if (!req.file) {
+      return next(new Error("Please upload an image", 400));
+    }
     try {
       const modelResult = await axios.post(
         `http://127.0.0.1:5000/detect/${endpoint}`,

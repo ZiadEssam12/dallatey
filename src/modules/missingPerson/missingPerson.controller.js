@@ -30,7 +30,7 @@ export const addMissingPerson = asyncHandler(async (req, res, next) => {
   //     }
   //   );
   // }
-  
+
   if (req.files.length === 0) {
     return next(new Error("You should at least provide one image", 400));
   }
@@ -144,6 +144,9 @@ export const getMatch = asyncHandler(async (req, res, next) => {
   // if (!modelImage) {
   //   return next(new Error("Couldn't find any match in our database", 404));
   // }
+
+
+  
   const modelImage = req.modelResult;
 
   const missingPersonData = await MissingPerson.findOne({
